@@ -159,6 +159,20 @@ log "Enabling service"
 systemctl daemon-reload
 systemctl enable --now nexora-scanner
 
+log "Waiting for service startup"
+sleep 2
+if ! systemctl is-active --quiet nexora-scanner; then
+  echo "Service failed to start. Check: journalctl -u nexora-scanner -n 100 --no-pager"
+  exit 1
+fi
+
+if command -v curl >/dev/null 2>&1; then
+  HEALTH_CODE="$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:${PORT}/" || true)"
+  if [[ "${HEALTH_CODE}" != "200" ]]; then
+    echo "Health check returned HTTP ${HEALTH_CODE}. Check service logs."
+  fi
+fi
+
 log "Install complete"
 log "Check service: systemctl status nexora-scanner"
 log "Open: http://<raspberry-pi-ip>:${PORT}"

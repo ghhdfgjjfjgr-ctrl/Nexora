@@ -60,6 +60,37 @@ http://<RASPBERRY_PI_IP>:5000
 sudo bash scripts/install_kali_rpi.sh --repo <YOUR_GITHUB_REPO_URL> --branch main
 ```
 
+## ติดตั้ง “บนเครื่องนี้เลย” แบบครบ (GitHub repo + install script)
+
+หากอยู่บน Kali Linux (Raspberry Pi) แล้วต้องการติดตั้งให้ครบในคำสั่งเดียว:
+
+```bash
+# 1) clone repo installer มาก่อน
+git clone <YOUR_GITHUB_REPO_URL>
+cd Nexora
+
+# 2) bootstrap + install service ครบ
+sudo bash scripts/full_setup_kali_rpi.sh \
+  --repo <YOUR_GITHUB_REPO_URL> \
+  --branch main \
+  --dir /opt/nexora-scanner \
+  --user www-data \
+  --group www-data \
+  --host 0.0.0.0 \
+  --port 5000
+```
+
+เช็กผลหลังติดตั้ง:
+```bash
+systemctl status nexora-scanner
+curl -sS http://127.0.0.1:5000 | head
+```
+
+ถอนการติดตั้ง:
+```bash
+sudo bash scripts/uninstall_kali_rpi.sh --remove-data
+```
+
 ## หมายเหตุ
 - หากเครื่องไม่มี `nmap`, `zap.sh`, `arachni` ระบบจะบันทึกสถานะ `skipped/simulated` พร้อมคำแนะนำ
 - ใช้งานเฉพาะกับเป้าหมายที่ได้รับอนุญาตเท่านั้น
