@@ -1,0 +1,16 @@
+[Unit]
+Description=Nexora Vulnerability Scanner
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/nexora-scanner
+EnvironmentFile=-/etc/default/nexora-scanner
+ExecStart=/opt/nexora-scanner/.venv/bin/python /opt/nexora-scanner/app.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
